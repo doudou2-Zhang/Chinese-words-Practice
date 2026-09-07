@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn Chinese Characters with Radicals 从偏旁到汉字</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Arial", "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: linear-gradient(135deg, #fff8e7, #eef7ff);
+      color: #2f3a4a;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 55px 20px 30px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #c9473a;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      font-size: 1.25rem;
+      color: #5f6b78;
+    }
+
+    .instruction {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #7a8490;
+    }
+
+    main {
+      width: min(1000px, 92%);
+      margin: 0 auto;
+      padding: 20px 0 60px;
+    }
+
+    .radical-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 20px;
+    }
+
+    .radical-card {
+      display: block;
+      text-decoration: none;
+      background: white;
+      border-radius: 18px;
+      padding: 26px 20px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(55, 72, 90, 0.10);
+      border: 2px solid transparent;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      color: inherit;
+    }
+
+    .radical-card:hover,
+    .radical-card:focus {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(55, 72, 90, 0.16);
+      border-color: #f0b45d;
+      outline: none;
+    }
+
+    .radical {
+      font-size: 3.2rem;
+      font-weight: bold;
+      color: #2f7d67;
+      margin-bottom: 8px;
+    }
+
+    .name-cn {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .name-en {
+      font-size: 0.95rem;
+      color: #75808c;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px 15px;
+      color: #8a9199;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 520px) {
+      header {
+        padding-top: 38px;
+      }
+
+      .radical-card {
+        padding: 22px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Learn Chinese Characters with Radicals</h1>
+    <div class="subtitle">从偏旁到汉字</div>
+    <div class="instruction">Choose a radical to begin · 选择一个偏旁开始学习</div>
+  </header>
+
+  <main>
+    <div class="radical-grid">
+
+      <a class="radical-card" href="danrenpang.html">
+        <div class="radical">亻</div>
+        <div class="name-cn">单人旁</div>
+        <div class="name-en">Person Radical</div>
+      </a>
+
+      <a class="radical-card" href="kouzipang.html">
+        <div class="radical">口</div>
+        <div class="name-cn">口字旁</div>
+        <div class="name-en">Mouth Radical</div>
+      </a>
+
+      <a class="radical-card" href="sandianshui.html">
+        <div class="radical">氵</div>
+        <div class="name-cn">三点水</div>
+        <div class="name-en">Water Radical</div>
+      </a>
+
+      <a class="radical-card" href="tishoupang.html">
+        <div class="radical">扌</div>
+        <div class="name-cn">提手旁</div>
+        <div class="name-en">Hand Radical</div>
+      </a>
+
+      <a class="radical-card" href="caozitou.html">
+        <div class="radical">艹</div>
+        <div class="name-cn">草字头</div>
+        <div class="name-en">Grass Radical</div>
+      </a>
+
+      <a class="radical-card" href="muzipang.html">
+        <div class="radical">木</div>
+        <div class="name-cn">木字旁</div>
+        <div class="name-en">Wood Radical</div>
+      </a>
+
+      <a class="radical-card" href="shuangrenpang.html">
+        <div class="radical">彳</div>
+        <div class="name-cn">双人旁</div>
+        <div class="name-en">Step Radical</div>
+      </a>
+
+      <a class="radical-card" href="jiaosipang.html">
+        <div class="radical">纟</div>
+        <div class="name-cn">绞丝旁</div>
+        <div class="name-en">Silk Radical</div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    Chinese Character Learning · 汉字学习
+  </footer>
+
+</body>
+</html>
