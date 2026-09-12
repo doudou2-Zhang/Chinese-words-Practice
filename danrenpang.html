@@ -282,7 +282,13 @@ document.getElementById("doneBtn").addEventListener("click", () => {
 });
 
 document.getElementById("homeBtn").addEventListener("click", () => {
-  window.location.href = "index.html";
+  // Navigate to the root index.html - works on both local and GitHub Pages
+  const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+  if (basePath.includes('Chinese-words-Practice')) {
+    window.location.href = window.location.origin + basePath + '/index.html';
+  } else {
+    window.location.href = window.location.origin + '/Chinese-words-Practice/index.html';
+  }
 });
 
 buildButtons();
