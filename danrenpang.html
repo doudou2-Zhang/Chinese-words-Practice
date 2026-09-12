@@ -109,6 +109,20 @@ canvas {
   color: #666;
   font-size: 15px;
 }
+.home-button-container {
+  margin-top: 30px;
+}
+.home-button-container button {
+  padding: 12px 24px;
+  border: 1px solid #bbb;
+  border-radius: 9px;
+  background: #333;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.home-button-container button:hover { background: #555; }
 </style>
 </head>
 
@@ -139,6 +153,10 @@ canvas {
 
   <div class="complete" id="message"></div>
   <div class="progress" id="progress">1 / 9</div>
+
+  <div class="home-button-container">
+    <button id="homeBtn">← 返回主页面</button>
+  </div>
 </div>
 
 <script>
@@ -261,6 +279,10 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 
 document.getElementById("doneBtn").addEventListener("click", () => {
   message.textContent = `🎉 太棒了！你完成了「${words[current].char}」的练习！`;
+});
+
+document.getElementById("homeBtn").addEventListener("click", () => {
+  window.location.href = "index.html";
 });
 
 buildButtons();
