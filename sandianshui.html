@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的汉字练习｜三点水</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: #f7f7f7;
+  color: #333;
+  text-align: center;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+h1 { margin: 8px 0 4px; font-size: 30px; }
+.theme { color: #777; font-size: 18px; margin-bottom: 18px; }
+.word-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.word-buttons button {
+  font-size: 24px;
+  min-width: 58px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+}
+.word-buttons button.active {
+  background: #333;
+  color: white;
+}
+.character { font-size: 42px; font-weight: 600; margin: 5px; }
+.pinyin { font-size: 20px; color: #666; margin-bottom: 15px; }
+
+.practice-area {
+  position: relative;
+  width: min(90vw, 520px);
+  height: min(90vw, 520px);
+  margin: 0 auto 18px;
+  background-color: white;
+  background-image:
+    linear-gradient(to right, transparent 49.7%, #e5bcbc 49.7%, #e5bcbc 50.3%, transparent 50.3%),
+    linear-gradient(to bottom, transparent 49.7%, #e5bcbc 49.7%, #e5bcbc 50.3%, transparent 50.3%),
+    linear-gradient(45deg, transparent 49.7%, #ead8d8 49.7%, #ead8d8 50.3%, transparent 50.3%),
+    linear-gradient(-45deg, transparent 49.7%, #ead8d8 49.7%, #ead8d8 50.3%, transparent 50.3%);
+  border: 2px solid #d5d5d5;
+  border-radius: 6px;
+  overflow: hidden;
+  touch-action: none;
+}
+#guide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "KaiTi", "STKaiti", "Noto Serif SC", serif;
+  font-size: min(65vw, 350px);
+  color: rgba(120,120,120,0.18);
+  pointer-events: none;
+  user-select: none;
+}
+canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+.hint {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 15px;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.controls button {
+  padding: 11px 18px;
+  border: 1px solid #bbb;
+  border-radius: 9px;
+  background: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+.controls button:hover { background: #eee; }
+.complete {
+  margin-top: 16px;
+  font-size: 18px;
+  min-height: 28px;
+  font-weight: 600;
+}
+.progress {
+  margin-top: 20px;
+  color: #666;
+  font-size: 15px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>我的汉字练习</h1>
+  <div class="theme">部首：三点水（氵）</div>
+
+  <div class="word-buttons" id="wordButtons"></div>
+
+  <div class="character" id="character">海</div>
+  <div class="pinyin" id="pinyin">hǎi</div>
+
+  <div class="practice-area" id="practiceArea">
+    <div id="guide">海</div>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="hint">请用鼠标、触控板、触屏或触控笔在田字格中书写。</div>
+
+  <div class="controls">
+    <button id="clearBtn">🗑 清除</button>
+    <button id="toggleBtn">👁 隐藏范字</button>
+    <button id="prevBtn">← 上一个</button>
+    <button id="nextBtn">下一个 →</button>
+    <button id="doneBtn">✓ 完成练习</button>
+    <button id="homeBtn">⌂ 回到主页</button>
+  </div>
+
+  <div class="complete" id="message"></div>
+  <div class="progress" id="progress">1 / 9</div>
+</div>
+
+<script>
+const words = [
+  { char: "海", pinyin: "hǎi" },
+  { char: "波", pinyin: "bō" },
+  { char: "涛", pinyin: "tāo" },
+  { char: "清", pinyin: "qīng" },
+  { char: "洪", pinyin: "hóng" },
+  { char: "洁", pinyin: "jié" },
+  { char: "江", pinyin: "jiāng" },
+  { char: "汉", pinyin: "hàn" },
+  { char: "治", pinyin: "zhì" }
+];
+
+let current = 0;
+let showGuide = true;
+let drawing = false;
+
+const character = document.getElementById("character");
+const pinyin = document.getElementById("pinyin");
+const guide = document.getElementById("guide");
+const canvas = document.getElementById("canvas");
+const area = document.getElementById("practiceArea");
+const ctx = canvas.getContext("2d");
+const message = document.getElementById("message");
+const progress = document.getElementById("progress");
+const toggleBtn = document.getElementById("toggleBtn");
+const wordButtons = document.getElementById("wordButtons");
+
+function resizeCanvas() {
+  const rect = area.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 5;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function buildButtons() {
+  wordButtons.innerHTML = "";
+  words.forEach((word, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = word.char;
+    btn.addEventListener("click", () => selectWord(index));
+    wordButtons.appendChild(btn);
+  });
+  updateButtons();
+}
+
+function updateButtons() {
+  [...wordButtons.children].forEach((btn, i) => {
+    btn.classList.toggle("active", i === current);
+  });
+}
+
+function selectWord(index) {
+  current = index;
+  character.textContent = words[current].char;
+  pinyin.textContent = words[current].pinyin;
+  guide.textContent = words[current].char;
+  message.textContent = "";
+  clearCanvas();
+  updateButtons();
+  progress.textContent = `${current + 1} / ${words.length}`;
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+}
+
+function getPoint(e) {
+  const rect = canvas.getBoundingClientRect();
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+
+canvas.addEventListener("pointerdown", e => {
+  drawing = true;
+  canvas.setPointerCapture(e.pointerId);
+  const p = getPoint(e);
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y);
+});
+
+canvas.addEventListener("pointermove", e => {
+  if (!drawing) return;
+  const p = getPoint(e);
+  ctx.lineTo(p.x, p.y);
+  ctx.stroke();
+});
+
+function stopDrawing() {
+  drawing = false;
+  ctx.beginPath();
+}
+canvas.addEventListener("pointerup", stopDrawing);
+canvas.addEventListener("pointercancel", stopDrawing);
+
+document.getElementById("clearBtn").addEventListener("click", () => {
+  clearCanvas();
+  message.textContent = "";
+});
+
+toggleBtn.addEventListener("click", () => {
+  showGuide = !showGuide;
+  guide.style.display = showGuide ? "flex" : "none";
+  toggleBtn.textContent = showGuide ? "👁 隐藏范字" : "👁 显示范字";
+});
+
+document.getElementById("prevBtn").addEventListener("click", () => {
+  selectWord((current - 1 + words.length) % words.length);
+});
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  selectWord((current + 1) % words.length);
+});
+
+document.getElementById("homeBtn").addEventListener("click", () => {
+  window.location.href = "../index.html";
+});
+
+document.getElementById("doneBtn").addEventListener("click", () => {
+  message.textContent = `🎉 太棒了！你完成了「${words[current].char}」的练习！`;
+});
+
+buildButtons();
+selectWord(0);
+</script>
+</body>
+</html>
